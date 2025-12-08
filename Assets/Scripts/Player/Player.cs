@@ -1,28 +1,44 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer), typeof(Animator))]
+[RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer))]
 public class Player : MonoBehaviour
 {
     [SerializeField] private PlayerMovement _playerMovement;
+    [SerializeField] private PlayerJump _playerJump;
     [SerializeField] private PlayerWallet _playerWallet;
+    [SerializeField] private PlayerRotation _playerRotation;
 
-    public Rigidbody2D Rigidbody2D { get; private set; }
-    public SpriteRenderer SpriteRenderer { get; private set; }
-    public Animator Animator { get; private set; }
+    public event Action Movable;
+    public event Action Idled;
+
+    private Rigidbody2D _rigidbody2D;
+    private SpriteRenderer _spriteRenderer;
 
     private void Awake()
     {
-        Rigidbody2D = GetComponent<Rigidbody2D>();
-        SpriteRenderer = GetComponent<SpriteRenderer>();
-        Animator = GetComponent<Animator>();
+        _rigidbody2D = GetComponent<Rigidbody2D>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void Update()
     {
-        if (_playerMovement.Horizontal == 0)
-            Animator.SetBool(_playerMovement.IsRun, false);
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
+        {
+            Movable?.Invoke();
+            _playerMovement.Move(_rigidbody2D);
+            transform.rotation = _playerRotation.GetRotation(_playerMovement.Horizontal);
+        }
+        else
+        {
+            Idled?.Invoke();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+            _playerJump.Jump(_rigidbody2D);
     }
 
     private void OnTriggerEnter2D(Collider2D other)

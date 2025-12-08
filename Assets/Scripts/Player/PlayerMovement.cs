@@ -1,10 +1,8 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
-using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private Player _player;
     [SerializeField] private PlayerJump _playerJump;
     [SerializeField] private float _speed;
 
@@ -19,19 +17,14 @@ public class PlayerMovement : MonoBehaviour
         Horizontal = Input.GetAxis(_horizontal);
     }
 
-    public void Move()
+    public void Move(Rigidbody2D rigidbody2D)
     {
         if (_playerJump.IsGrounded())
         {
-            _player.Animator.SetBool(IsRun, true);
-            _player.SpriteRenderer.flipX = IsChangeFlip();
-            _player.Rigidbody2D.linearVelocity = GetDirection(Horizontal, _speed);
+            rigidbody2D.linearVelocity = GetDirection(Horizontal, _speed);
         }
     }
 
     private Vector2 GetDirection(float direction, float speed) =>
         new Vector2(direction * speed, 0);
-
-    private bool IsChangeFlip() =>
-        Horizontal == _numberHorizontalX;   
 }

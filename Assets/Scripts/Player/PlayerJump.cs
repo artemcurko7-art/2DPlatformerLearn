@@ -1,19 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerJump : MonoBehaviour
 {
-    [SerializeField] private Player _player;
     [SerializeField] private Transform _groundedPoint;
     [SerializeField] private LayerMask _groundedMask;
     [SerializeField] private float _distanceRay;
     [SerializeField] private float _jumpForce;
 
-    public void Jump()
+    public void Jump(Rigidbody2D rigidbody2D)
     {
         if (IsGrounded())
-            _player.Rigidbody2D.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
+            rigidbody2D.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
     }
 
     public bool IsGrounded() =>

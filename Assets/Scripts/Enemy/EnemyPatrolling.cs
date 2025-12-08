@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EnemyPatrolling : MonoBehaviour
 {
-    [SerializeField] private Enemy _enemy;
+    [SerializeField] private EnemyRotation _enemyRotation;
     [SerializeField] private Transform _targetPoint;
     [SerializeField] private float _speed;
 
@@ -14,12 +14,12 @@ public class EnemyPatrolling : MonoBehaviour
         _position = GetPosition();
     }
 
-    private void Update()
+    public void Move()
     {
         if (transform.position == _position)
         {
             _position = GetPosition();
-            _enemy.SpriteRenderer.flipX = IsChangeFlip();
+            transform.rotation = _enemyRotation.GetRotation();
         }
 
         transform.position = Vector2.MoveTowards(transform.position, _position, _speed * Time.deltaTime);
@@ -36,7 +36,4 @@ public class EnemyPatrolling : MonoBehaviour
 
         return posiiton;
     }
-
-    private bool IsChangeFlip() =>
-        _enemy.SpriteRenderer.flipX == false ? true : false;
 }
