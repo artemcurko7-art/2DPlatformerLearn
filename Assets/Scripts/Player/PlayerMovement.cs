@@ -6,7 +6,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PlayerJump _playerJump;
     [SerializeField] private float _speed;
 
-    public readonly string IsRun = "IsRun";
     private readonly string _horizontal = "Horizontal";
     private readonly int _numberHorizontalX = -1;
 
