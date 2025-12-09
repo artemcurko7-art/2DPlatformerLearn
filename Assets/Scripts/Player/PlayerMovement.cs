@@ -3,26 +3,13 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private PlayerJump _playerJump;
+    [SerializeField] private Ground _ground;
     [SerializeField] private float _speed;
 
-    public readonly string IsRun = "IsRun";
-    private readonly string _horizontal = "Horizontal";
-    private readonly int _numberHorizontalX = -1;
-
-    public float Horizontal { get; private set; }
-
-    private void Update()
+    public void Move(Rigidbody2D rigidbody2D, float direction)
     {
-        Horizontal = Input.GetAxis(_horizontal);
-    }
-
-    public void Move(Rigidbody2D rigidbody2D)
-    {
-        if (_playerJump.IsGrounded())
-        {
-            rigidbody2D.linearVelocity = GetDirection(Horizontal, _speed);
-        }
+        if (_ground.IsGrounded())
+            rigidbody2D.linearVelocity = GetDirection(direction, _speed);
     }
 
     private Vector2 GetDirection(float direction, float speed) =>

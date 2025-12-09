@@ -9,11 +9,9 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private PlayerMovement _playerMovement;
     [SerializeField] private PlayerJump _playerJump;
-    [SerializeField] private PlayerWallet _playerWallet;
-    [SerializeField] private PlayerRotation _playerRotation;
-
-    public event Action Movable;
-    public event Action Idled;
+    [SerializeField] private PlayerAnimation _playerAnimation;
+    [SerializeField] private UnitRotation _unitRotation;
+    [SerializeField] private InputReader _inputReader;
 
     private Rigidbody2D _rigidbody2D;
     private SpriteRenderer _spriteRenderer;
@@ -24,28 +22,27 @@ public class Player : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    private void Update()
+    private void OnEnable()
     {
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
-        {
-            Movable?.Invoke();
-            _playerMovement.Move(_rigidbody2D);
-            transform.rotation = _playerRotation.GetRotation(_playerMovement.Horizontal);
-        }
-        else
-        {
-            Idled?.Invoke();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-            _playerJump.Jump(_rigidbody2D);
+        _inputReader.Movable += OnMove;
+        _inputReader.Jumper += OnJump;
+        _inputReader.Idled += _playerAnimation.OnIdledAnimation;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnDisable()
     {
-        if (other.transform.TryGetComponent<Coin>(out Coin coin))
-        {
-            _playerWallet.AddCoin(coin);
-        }
+        _inputReader.Movable -= OnMove;
+        _inputReader.Jumper -= OnJump;
+        _inputReader.Idled -= _playerAnimation.OnIdledAnimation;
     }
+
+    private void OnMove(float direction)
+    {
+        _playerMovement.Move(_rigidbody2D, direction);
+        transform.rotation = _unitRotation.GetRotation(direction);
+        _playerAnimation.OnMovableAnimation();
+    }
+
+    private void OnJump() =>
+        _playerJump.Jump(_rigidbody2D);
 }

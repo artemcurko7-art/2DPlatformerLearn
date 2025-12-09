@@ -1,7 +1,11 @@
 using UnityEngine;
 
-public abstract class UnitRotation : MonoBehaviour
+public class UnitRotation : MonoBehaviour
 {
-    protected readonly Quaternion RotationLookRight = Quaternion.identity;
-    protected readonly Quaternion RotationLookLeft = Quaternion.Euler(0, 180, 0);
+    private readonly Quaternion RotationLookRight = Quaternion.identity;
+    private readonly Quaternion RotationLookLeft = Quaternion.Euler(0, 180, 0);
+    private readonly int _numberHorizontalX = 1;
+
+    public Quaternion GetRotation(float direction) =>
+        direction == _numberHorizontalX ? RotationLookRight : RotationLookLeft;
 }
